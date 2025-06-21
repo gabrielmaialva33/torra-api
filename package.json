@@ -1,7 +1,7 @@
 {
-  "name": "base-acl-api",
-  "description": "This is a base API project with ACL (Access Control List) using AdonisJS.",
-  "version": "0.0.1",
+  "name": "torra-api",
+  "description": "Click & Collect System API - Torra Stores. Store pickup management system with smart lockers.",
+  "version": "1.0.0",
   "author": {
     "name": "Gabriel M.",
     "email": "gabrielmaialva33@gmail.com",
