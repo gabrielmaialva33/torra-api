@@ -18,6 +18,10 @@ import '#modules/role/routes/index'
 import '#modules/user/routes/index'
 import '#modules/file/routes/index'
 import '#modules/permission/routes/index'
+import '#modules/store/routes/index'
+import '#modules/customer/routes/index'
+import '#modules/order/routes/index'
+import '#modules/locker/routes/index'
 
 router
   .get('/', async () => {
