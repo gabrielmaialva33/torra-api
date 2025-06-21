@@ -20,6 +20,7 @@ import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Role from '#modules/role/models/role'
 import IRole from '#modules/role/interfaces/role_interface'
 import Permission from '#modules/permission/models/permission'
+import Store from '#modules/store/models/store'
 
 const AuthFinder = withAuthFinder(() => hash.use('argon'), {
   uids: ['email', 'username'],
@@ -64,6 +65,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
     email_verification_token: string | null
     email_verification_sent_at: string | null
     email_verified_at: string | null
+
+    [key: string]: any // Allow additional metadata fields
   }
 
   @column.dateTime({ autoCreate: true })
@@ -88,6 +91,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
     pivotColumns: ['granted', 'expires_at'],
   })
   declare permissions: ManyToMany<typeof Permission>
+
+  @manyToMany(() => Store, {
+    pivotTable: 'user_stores',
+    pivotColumns: ['role', 'is_active'],
+    pivotTimestamps: true,
+  })
+  declare stores: ManyToMany<typeof Store>
 
   /**
    * ------------------------------------------------------
