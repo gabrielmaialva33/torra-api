@@ -33,6 +33,11 @@ namespace IPermission {
     SETTINGS = 'settings',
     REPORTS = 'reports',
     AUDIT = 'audit',
+    STORES = 'stores',
+    LOCKERS = 'lockers',
+    ORDERS = 'orders',
+    CUSTOMERS = 'customers',
+    NOTIFICATIONS = 'notifications',
   }
 
   export enum Actions {
