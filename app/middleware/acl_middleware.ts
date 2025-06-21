@@ -6,7 +6,7 @@ import ForbiddenException from '#exceptions/forbidden_exception'
 
 export default class AclMiddleware {
   async handle({ auth, i18n }: HttpContext, next: NextFn, opts: { role_slugs: IRole.Slugs[] }) {
-    // Get authenticated user
+    // Get an authenticated user
     const user = auth.user
 
     if (!user) {
