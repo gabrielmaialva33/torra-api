@@ -6,8 +6,8 @@ test.group('Basic API', () => {
 
     response.assertStatus(200)
     response.assertBodyContains({
-      name: 'base-acl-api',
-      version: '0.0.1',
+      name: 'torra-api',
+      version: '1.0.0',
     })
   })
 

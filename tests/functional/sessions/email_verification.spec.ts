@@ -1,11 +1,13 @@
 import { test } from '@japa/runner'
+import testUtils from '@adonisjs/core/services/test_utils'
 import mail from '@adonisjs/mail/services/main'
 import string from '@adonisjs/core/helpers/string'
 import { DateTime } from 'luxon'
 
 import User from '#modules/user/models/user'
 
-test.group('Email verification', () => {
+test.group('Email verification', (group) => {
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
   test('should send verification email on sign up', async ({ client, assert, cleanup }) => {
     // Reset mail service before test
     mail.restore()
@@ -14,7 +16,7 @@ test.group('Email verification', () => {
 
     const response = await client.post('/api/v1/sessions/sign-up').json({
       full_name: 'Test User',
-      email: 'testverify@example.com',
+      email: `testverify${Date.now()}@example.com`,
       password: 'password123',
       password_confirmation: 'password123',
     })
@@ -30,7 +32,7 @@ test.group('Email verification', () => {
     // assert.equal(sent[0].constructor.name, 'VerifyEmailNotification')
 
     // Check the user was created with verification fields
-    const user = await User.findBy('email', 'testverify@example.com')
+    const user = await User.findByOrFail('email', response.body().user.email)
     assert.exists(user)
     assert.isFalse(user!.metadata.email_verified)
     assert.exists(user!.metadata.email_verification_token)
@@ -43,7 +45,7 @@ test.group('Email verification', () => {
     const token = string.generateRandom(32)
     const user = await User.create({
       full_name: 'Verify Test',
-      email: 'verifytest@example.com',
+      email: `verifytest${Date.now()}@example.com`,
       password: 'password123',
       metadata: {
         email_verified: false,
@@ -81,7 +83,7 @@ test.group('Email verification', () => {
     const token = string.generateRandom(32)
     await User.create({
       full_name: 'Already Verified',
-      email: 'alreadyverified@example.com',
+      email: `alreadyverified${Date.now()}@example.com`,
       password: 'password123',
       metadata: {
         email_verified: true,
@@ -103,7 +105,7 @@ test.group('Email verification', () => {
     const token = string.generateRandom(32)
     await User.create({
       full_name: 'Expired Token',
-      email: 'expiredtoken@example.com',
+      email: `expiredtoken${Date.now()}@example.com`,
       password: 'password123',
       metadata: {
         email_verified: false,
@@ -130,7 +132,7 @@ test.group('Email verification', () => {
     // Create unverified user
     const user = await User.create({
       full_name: 'Resend Test',
-      email: 'resendtest@example.com',
+      email: `resendtest${Date.now()}@example.com`,
       password: 'password123',
       metadata: {
         email_verified: false,
@@ -142,7 +144,7 @@ test.group('Email verification', () => {
 
     // Sign in to get auth token
     const signInResponse = await client.post('/api/v1/sessions/sign-in').json({
-      uid: 'resendtest@example.com',
+      uid: user.email,
       password: 'password123',
     })
 
@@ -173,9 +175,9 @@ test.group('Email verification', () => {
 
   test('should not resend if already verified', async ({ client }) => {
     // Create verified user
-    await User.create({
+    const user = await User.create({
       full_name: 'Already Verified Resend',
-      email: 'verifiedresend@example.com',
+      email: `verifiedresend${Date.now()}@example.com`,
       password: 'password123',
       metadata: {
         email_verified: true,
@@ -187,7 +189,7 @@ test.group('Email verification', () => {
 
     // Sign in to get auth token
     const signInResponse = await client.post('/api/v1/sessions/sign-in').json({
-      uid: 'verifiedresend@example.com',
+      uid: user.email,
       password: 'password123',
     })
 
