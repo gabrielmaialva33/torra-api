@@ -50,4 +50,5 @@ export const middleware = router.named({
   acl: () => import('#middleware/acl_middleware'),
   permission: () => import('#middleware/permission_middleware'),
   ownership: () => import('#middleware/ownership_middleware'),
+  storeContext: () => import('#middleware/store_context_middleware'),
 })
